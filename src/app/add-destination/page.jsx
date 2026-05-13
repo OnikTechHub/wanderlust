@@ -4,24 +4,36 @@ import { FieldError, Input, Label, TextField, Select, ListBox, TextArea, Button,
 
 const AddDestinationPage = () => {
     const onSubmit = async (e) => {
-        e.preventDefault()
-        const formData = new FormData(e.currentTarget)
-        const destination = Object.fromEntries(formData.entries())
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const destination = Object.fromEntries(formData.entries());
 
-        console.log(destination)
-
+    try {
         const res = await fetch('http://localhost:5000/destination', {
             method: 'POST',
             headers: {
                 'content-type': 'application/json'
             },
             body: JSON.stringify(destination)
-        })
+        });
 
-        const data = await res.json()
+        const data = await res.json();
 
-        console.log(data)
+        // যদি রেসপন্স সফল হয় (status 200-299 এর মধ্যে থাকে)
+        if (res.ok) {
+            alert("✅ Success! Destination added successfully.");
+            e.target.reset(); // ফরমটি খালি করার জন্য
+            console.log("Success Data:", data);
+        } else {
+            // যদি সার্ভার থেকে কোন এরর আসে (যেমন: ৪0৪ বা ৫00)
+            alert("❌ Error! Failed to add destination. Please try again.");
+        }
+    } catch (error) {
+        // যদি নেটওয়ার্ক বা অন্য কোন টেকনিক্যাল সমস্যা হয়
+        console.error("Fetch Error:", error);
+        alert("⚠️ Something went wrong! Please check your server connection.");
     }
+};
 
     return (
         <div className="p-5 max-w-7xl mx-auto">
