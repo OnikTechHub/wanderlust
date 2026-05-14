@@ -1,10 +1,77 @@
 "use client"
+import { authClient } from '@/lib/auth-client';
 import { Card, DateField, Label } from '@heroui/react';
-import React from 'react';
-import { FaArrowRight } from "react-icons/fa6"; 
+import React, { useState } from 'react';
+import { FaArrowRight } from "react-icons/fa6";
+import toast from 'react-hot-toast'; // ১. টোস্ট ইম্পোর্ট করা হয়েছে
 
 const BookingCard = ({ destination }) => {
-    const { price } = destination;
+
+    const { data: session } = authClient.useSession()
+
+    const user = session?.user
+    // console.log(user)
+
+    const [departureDate, setDepartureDate] = useState(null)
+    // console.log(new Date(departureDate))
+    // console.log(destination)
+    const { price, _id, destinationName, imageUrl, country } = destination;
+
+    const handleBooking = async () => {
+        // ২. ইউজার লগইন না থাকলে এরর টোস্ট দেখাবে
+        if (!user) {
+            toast.error("Please login first to book this destination!");
+            return;
+        }
+
+        // ৩. ডেট সিলেক্ট না করলে এরর টোস্ট দেখাবে
+        if (!departureDate) {
+            toast.error("Please select a departure date before booking!");
+            return;
+        }
+
+        const bookingData = {
+            userId: user.id,
+            userImage: user.image,
+            userName: user.name,
+            destination: _id,
+            destinationName,
+            price,
+            imageUrl,
+            country,
+            departureDate: new Date(departureDate)
+        }
+
+        console.log(bookingData)
+        
+        // ৪. রিকোয়েস্ট প্রসেস হওয়ার সময় লোডিং টোস্ট চালু হবে
+        const toastId = toast.loading("Processing your booking...");
+
+        try {
+            const res = await fetch("http://localhost:5000/booking", {
+                method: "POST",
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(bookingData)
+            })
+            
+            const data = await res.json();
+            console.log(data)
+
+            if (res.ok) {
+                // ৫. বুকিং সফল হলে লোডিং কেটে সাকসেস টোস্ট দেখাবে
+                toast.success("Your booking has been confirmed! 🎉", { id: toastId });
+            } else {
+                // ৬. ডাটাবেজ বা ব্যাকএন্ডে সমস্যা হলে এরর টোস্ট দেখাবে
+                toast.error("Booking failed. Please try again.", { id: toastId });
+            }
+        } catch (error) {
+            console.error(error);
+            // 6. নেটওয়ার্ক বা কানেকশন এরর হলে টোস্ট দেখাবে
+            toast.error("Network error! Could not connect to server.", { id: toastId });
+        }
+    }
 
     return (
         <Card className='rounded-xl border border-gray-100 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.06)] w-full max-w-[360px] mx-auto mt-5 space-y-6'>
@@ -19,7 +86,7 @@ const BookingCard = ({ destination }) => {
 
 
             <div className="space-y-2">
-                <DateField className="w-full" name="date">
+                <DateField onChange={setDepartureDate} className="w-full" name="date">
                     <Label className="text-xs font-semibold text-gray-500 hidden">Departure Date</Label>
                     <DateField.Group className="w-full bg-slate-50/80 border border-gray-100 rounded-lg p-3 text-gray-700 font-medium">
                         <DateField.Input>
@@ -29,7 +96,7 @@ const BookingCard = ({ destination }) => {
                 </DateField>
             </div>
 
-            <button className='w-full py-3.5 px-4 bg-[#119ab5] text-white font-semibold rounded-lg flex items-center justify-center gap-2 hover:bg-[#0e839a] transition-all group shadow-sm'>
+            <button onClick={handleBooking} className='w-full py-3.5 px-4 bg-[#119ab5] text-white font-semibold rounded-lg flex items-center justify-center gap-2 hover:bg-[#0e839a] transition-all group shadow-sm'>
                 <span>Book Now</span>
                 <FaArrowRight className="text-sm transition-transform group-hover:translate-x-1" />
             </button>
