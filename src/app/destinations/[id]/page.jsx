@@ -1,10 +1,8 @@
 import BookingCard from "@/components/BookingCard";
 import { DeleteAlert } from "@/components/DeleteAlert";
 import { EditModal } from "@/components/EditModal";
-import { Button } from "@heroui/react";
 import Image from "next/image";
-import { BiEdit } from "react-icons/bi";
-import { FaRegCalendar } from "react-icons/fa6";
+import { FaRegCalendar, FaStar } from "react-icons/fa6";
 import { LuMapPin } from "react-icons/lu";
 
 const DestinationDetailsPage = async ({ params }) => {
@@ -13,48 +11,96 @@ const DestinationDetailsPage = async ({ params }) => {
   const res = await fetch(`http://localhost:5000/destination/${id}`);
   const destination = await res.json();
 
-  const { imageUrl, price, destinationName, duration, country, description } =
-    destination;
+  const { imageUrl, destinationName, duration, country, description } = destination;
+
+
+  const highlights = [
+    "Luxury beachfront accommodation",
+    "Visit Uluwatu Temple at sunset",
+    "Traditional Balinese spa treatment",
+    "Private beach dinner experience",
+    "Sunrise trek to Mount Batur"
+  ];
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex  items-center gap-3 justify-end mt-5 mb-3">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 py-6">
+     
+      <div className="flex items-center gap-3 justify-end mb-5">
         <EditModal destination={destination} />
-        <DeleteAlert destination={destination}/>
+        <DeleteAlert destination={destination} />
       </div>
-      <Image
-        className="w-full h-100 object-cover"
-        alt={destinationName}
-        src={imageUrl}
-        height={500}
-        width={800}
-      />
 
-     <div className="flex justify-between">
-       <div className="p-2">
-        <div className="flex items-center gap-1">
-          <LuMapPin /> <span>{country}</span>
-        </div>
-        <div className="flex justify-between">
-          <div>
-            <div>
-              <h2 className="text-xl font-bold">{destinationName}</h2>
+
+      <div className="w-full h-[450px] rounded-3xl overflow-hidden shadow-sm mb-8">
+        <Image
+          className="w-full h-full object-cover"
+          alt={destinationName}
+          src={imageUrl}
+          height={600}
+          width={1200}
+          priority
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+        
+        <div className="lg:col-span-2 space-y-8">
+          
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-gray-500 font-medium text-base">
+              <LuMapPin className="text-gray-400 text-lg" /> 
+              <span className="capitalize">{country}</span>
             </div>
-            <div className="flex gap-1 items-center">
-              <FaRegCalendar /> {duration}
+            
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">
+              {destinationName}
+            </h1>
+
+            <div className="flex items-center gap-6 pt-2 text-gray-600 font-medium">
+              <div className="flex items-center gap-2 text-gray-700">
+                <FaRegCalendar className="text-gray-500 text-lg" />
+                <span className="text-base font-semibold">{duration}</span>
+              </div>
             </div>
           </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Overview</h2>
+            <p className="text-gray-600 text-base leading-relaxed font-normal">
+              {description}
+            </p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Highlights</h2>
+            
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3.5 gap-x-6">
+              {highlights.map((highlight, index) => (
+                <div key={index} className="flex items-start gap-3">
+
+                  <svg
+                    className="w-5 h-5 text-emerald-500 mt-0.5 flex-shrink-0"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-gray-600 text-base font-normal">{highlight}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>
 
-        <h1 className="mt-10 text-2xl font-bold">Overview</h1>
+        <div className="lg:col-span-1 lg:sticky lg:top-6">
+          <BookingCard destination={destination} />
+        </div>
 
-        <p>{description}</p>
       </div>
-      <h2 className="text-xl font-bold">${price}</h2>
-      {/* <BookingCard destination={destination}/> */}
-     </div>
-
-
     </div>
   );
 };
