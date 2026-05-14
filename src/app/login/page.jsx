@@ -39,7 +39,11 @@ const LogInPage = () => {
 
   };
 
-  
+  const handleGoogleLogin = async () => {
+    await authClient.signIn.social({
+      provider: "google"
+    })
+  }
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -102,7 +106,7 @@ const LogInPage = () => {
               <Separator/>
             </div>
         <div>
-            <Button  variant="outline" className={'w-full rounded-none'}><FcGoogle /> LogIn in with Google</Button>
+            <Button onClick={handleGoogleLogin} variant="outline" className={'w-full rounded-none'}><FcGoogle /> LogIn in with Google</Button>
         </div>
       </Card>
     </div>

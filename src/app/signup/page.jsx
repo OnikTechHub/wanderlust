@@ -2,6 +2,7 @@
 import { FcGoogle } from "react-icons/fc";
 import { Card, Separator } from "@heroui/react";
 
+
 import {
   Button,
   Description,
@@ -41,8 +42,11 @@ const SignUpPage = () => {
 
   };
 
-  
-
+  const handleGoogleSignin = async () => {
+    await authClient.signIn.social({
+      provider: "google"
+    })
+  }
   return (
     <div className="max-w-7xl mx-auto">
       <div className="text-center my-3">
@@ -115,7 +119,7 @@ const SignUpPage = () => {
               <Separator/>
             </div>
         <div>
-            <Button  variant="outline" className={'w-full rounded-none'}><FcGoogle /> Sign in with Google</Button>
+            <Button onClick={handleGoogleSignin} variant="outline" className={'w-full rounded-none'}><FcGoogle /> Sign in with Google</Button>
         </div>
       </Card>
     </div>
