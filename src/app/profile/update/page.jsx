@@ -73,7 +73,7 @@ const UpdateProfilePage = () => {
             className="absolute top-4 right-4 z-50 text-red-500 hover:text-red-600 transition-all duration-200 p-1 rounded-full hover:bg-red-50"
             title="Cancel and go back"
           >
-            <TiDelete className="text-4xl" /> {/* বাটনটি অনেক বড় করার জন্য text-4xl করা হয়েছে */}
+            <TiDelete className="text-4xl" /> 
           </button>
 
           <div className="animate-in fade-in duration-200">
