@@ -3,7 +3,7 @@ import { authClient } from '@/lib/auth-client';
 import { Card, DateField, Label } from '@heroui/react';
 import React, { useState } from 'react';
 import { FaArrowRight } from "react-icons/fa6";
-import toast from 'react-hot-toast'; // ১. টোস্ট ইম্পোর্ট করা হয়েছে
+import toast from 'react-hot-toast'; 
 
 const BookingCard = ({ destination }) => {
 
@@ -18,13 +18,11 @@ const BookingCard = ({ destination }) => {
     const { price, _id, destinationName, imageUrl, country } = destination;
 
     const handleBooking = async () => {
-        // ২. ইউজার লগইন না থাকলে এরর টোস্ট দেখাবে
         if (!user) {
             toast.error("Please login first to book this destination!");
             return;
         }
 
-        // ৩. ডেট সিলেক্ট না করলে এরর টোস্ট দেখাবে
         if (!departureDate) {
             toast.error("Please select a departure date before booking!");
             return;
@@ -44,7 +42,6 @@ const BookingCard = ({ destination }) => {
 
         console.log(bookingData)
         
-        // ৪. রিকোয়েস্ট প্রসেস হওয়ার সময় লোডিং টোস্ট চালু হবে
         const toastId = toast.loading("Processing your booking...");
 
         try {
@@ -60,15 +57,12 @@ const BookingCard = ({ destination }) => {
             console.log(data)
 
             if (res.ok) {
-                // ৫. বুকিং সফল হলে লোডিং কেটে সাকসেস টোস্ট দেখাবে
                 toast.success("Your booking has been confirmed! 🎉", { id: toastId });
             } else {
-                // ৬. ডাটাবেজ বা ব্যাকএন্ডে সমস্যা হলে এরর টোস্ট দেখাবে
                 toast.error("Booking failed. Please try again.", { id: toastId });
             }
         } catch (error) {
             console.error(error);
-            // 6. নেটওয়ার্ক বা কানেকশন এরর হলে টোস্ট দেখাবে
             toast.error("Network error! Could not connect to server.", { id: toastId });
         }
     }
