@@ -5,10 +5,8 @@ import Navbar from "@/components/Navbar";
 import { Toaster } from "react-hot-toast";
 
 const Josefin = Josefin_Sans({
-
   subsets: ["latin"],
 });
-
 
 export const metadata = {
   title: "Create Next App",
@@ -17,15 +15,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      className={`${Josefin.className}  h-full antialiased`}
-    >
+    <html lang="en" className={`${Josefin.className}  h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Navbar />
-        {children}</body>
+        {children}
         <Toaster position="top-center" reverseOrder={false} />
         <Footer />
+      </body>
     </html>
   );
 }
